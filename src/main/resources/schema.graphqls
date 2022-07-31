@@ -1,0 +1,48 @@
+
+
+input PlayerCreationRequest{
+    teamId: ID!,
+    name: String!,
+    surname: String!,
+    position: PlayerPosition!
+}
+
+type PlayerDTO{
+    id: ID!,
+    name: String!,
+    surname: String,
+    team: String,
+    position: String,
+    createdAt: String
+}
+
+enum PlayerPosition{
+    PG
+    SG
+    SF
+    PF
+    C
+}
+
+type Team{
+    id: ID!,
+    name: String!
+}
+
+type Result{
+    message: String,
+    status: String
+}
+type DataResult{
+    data: PlayerDTO,
+    result: Result
+}
+
+type Query{
+    getAll:[PlayerDTO]
+}
+
+type Mutation{
+    createPlayer(request:PlayerCreationRequest!): DataResult
+    removePlayer(playerId: Int): Result
+}
