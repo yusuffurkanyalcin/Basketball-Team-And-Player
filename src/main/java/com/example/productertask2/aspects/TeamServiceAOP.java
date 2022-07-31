@@ -1,8 +1,8 @@
 package com.example.productertask2.aspects;
 
+import com.example.productertask2.exception.CustomException;
 import com.example.productertask2.repository.team.TeamRepository;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
@@ -23,6 +23,6 @@ public class TeamServiceAOP {
         if(teamExists){
             return;
         }
-        throw new IllegalStateException(Constants.TEAM_NOT_FOUND);
+        throw new CustomException(Constants.TEAM_NOT_FOUND);
     }
 }

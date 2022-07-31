@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -32,6 +34,11 @@ public class TeamManager implements TeamService {
     @Override
     public TeamEntity create(TeamEntity entity) {
         return teamRepository.save(entity);
+    }
+
+    @Override
+    public Optional<TeamEntity> getById(Long id) {
+        return teamRepository.findById(id);
     }
 
 }

@@ -38,7 +38,6 @@ public class PlayerMapperImp implements PlayerMapper{
                 .surname(playerEntity.getSurname())
                 .team(playerEntity.getTeamEntity().getName())
                 .position(playerEntity.getPosition())
-                .createdAt(playerEntity.getCreatedAt().toString())
                 .build();
     }
 

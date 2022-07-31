@@ -9,9 +9,7 @@ import com.example.productertask2.dto.mapper.PlayerMapper;
 import com.example.productertask2.dto.player.PlayerDTO;
 import com.example.productertask2.dto.request.PlayerCreationRequest;
 import com.example.productertask2.entity.player.PlayerEntity;
-import com.example.productertask2.exception.CustomException;
 import com.example.productertask2.repository.player.PlayerRepository;
-import graphql.GraphQLException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,36 +38,28 @@ public class PlayerManager implements PlayerService {
     @Override
     public Result remove(Long playerId) {
 
-        PlayerEntity playerEntity = playerRepository.findById(playerId).get();
-        if(playerEntity == null){
-            return Result.errorResult(Constants.PLAYER_NOT_FOUND);
-        }
-
         playerRepository.deleteById(playerId);
-
         return Result.successResult(Constants.PLAYER_HAS_BEEN_DELETED);
     }
 
     @Override
     public DataResult<PlayerDTO> createPlayer(PlayerCreationRequest request) {
-        Long teamId = request.getTeamId();
-        boolean isTeamFull = teamService.isTeamFull(teamId);
-        if(isTeamFull){
-            return new DataResult<>(
-                    null,
-                    Result.errorResult(Constants.TEAM_FULL)
-            );
-        }
+
         PlayerEntity playerEntity = playerMapper.convertFromDTOtoEntity(request);
 
         PlayerEntity response = playerRepository.save(playerEntity);
 
         PlayerDTO playerDTO = playerMapper.convertPlayerEntityToPlayerDTO(response);
 
-        return new DataResult<PlayerDTO>(
+        return new DataResult<>(
                 playerDTO,
                 Result.successResult(Constants.PLAYER_ADDED)
         );
+    }
+
+    @Override
+    public Optional<PlayerEntity> getById(Long id) {
+        return playerRepository.findById(id);
     }
 
 }

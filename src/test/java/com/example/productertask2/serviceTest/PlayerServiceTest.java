@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
@@ -38,6 +39,8 @@ public class PlayerServiceTest {
     TeamEntity teamEntity                       = new TeamEntity();
     List<PlayerEntity> playerEntityList         = new ArrayList<>();
     List<PlayerDTO> playerDTOList               = new ArrayList<>();
+
+    Optional<PlayerEntity> optionalPlayerEntity;
 
     @Before
     public void init(){
@@ -65,7 +68,6 @@ public class PlayerServiceTest {
         verify(playerMapperImp).convertPlayerEntityToPlayerDTO(Mockito.any(PlayerEntity.class));
         verify(playerManager).createPlayer(playerCreationRequest);
     }
-
     @Test
     public void whenGetAllCalledShouldReturnPlayers() {
 
@@ -80,19 +82,20 @@ public class PlayerServiceTest {
 
         verify(playerMapperImp).convertPlayerEntityListToPlayerDTOList(playerEntityList);
     }
-
-
     @Test
-    public void whenRemovePlayerCalledWithValidRequest_removePlayerInRequest() {
+    public void whenRemovePlayerCalled() {
         initializeAddPlayerObjects();
 
-        doReturn(Result.successResult("USER_WITH_ID_" + Constants.PLAYER_ID+ "_HAS_BEEN_DELETED")).when(playerManager).remove(Constants.PLAYER_ID);
-        when(playerManager.remove(Constants.PLAYER_ID)).thenReturn(Result.successResult("USER_WITH_ID_" + Constants.PLAYER_ID+ "_HAS_BEEN_DELETED"));
-
         Result processResult = playerManager.remove(Constants.PLAYER_ID);
-        Assert.assertEquals(processResult, Result.successResult("USER_WITH_ID_" + Constants.PLAYER_ID + "_HAS_BEEN_DELETED"));
+        Assert.assertEquals(processResult, Result.successResult("Player has been deleted"));
 
         verify(this.playerManager).remove(Constants.PLAYER_ID);
+    }
+
+    @Test
+    public void whenGetByIdCalledShouldReturnOptional(){
+        Optional<PlayerEntity> expected = playerManager.getById(Constants.PLAYER_ID);
+        Assert.assertNotSame("Get by id failured",expected,optionalPlayerEntity);
     }
     public void initializeAddPlayerObjects() {
         createPlayerEntity();
@@ -110,16 +113,10 @@ public class PlayerServiceTest {
     public void initializeGetAllPlayers() {
         createPlayerEntity();
         playerEntityList.add(playerEntity);
-        /*
-            createPlayerDTO();
-            playerDTOList.add(playerDTO);
-        */
     }
     public void createPlayerEntity() {
 
-        teamEntity.setId(Constants.TEAM_ID);
-        teamEntity.setName("Trabzon");
-
+        createTeamEntity();
         playerEntity.setId(Constants.PLAYER_ID);
         playerEntity.setName(Constants.PLAYER_NAME);
         playerEntity.setSurname(Constants.PLAYER_SURNAME);
@@ -134,5 +131,9 @@ public class PlayerServiceTest {
                 .team(teamEntity.getName())
                 .position(Constants.PLAYER_POSITION.toString())
                 .build();
+    }
+    private void createTeamEntity(){
+        teamEntity.setId(Constants.TEAM_ID);
+        teamEntity.setName("Trabzon");
     }
 }
